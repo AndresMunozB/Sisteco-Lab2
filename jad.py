@@ -36,21 +36,20 @@ class Jad():
 
     def generatePasswordCesar(self, iteration):
         value = ord(self.password[3])
-        value = int ( (iteration + 10) ** (iteration+5) )
+        value = int ( (iteration + value) ** (iteration+value) )
         return  value
+    
     def generateKeys(self):
         self.keys = []
-        
         for i in range(16):
             self.cesar.text = self.password
             self.cesar.password = self.generatePasswordCesar(i)
             key = string_to_bit_array(self.cesar.encrypt())
             self.keys.append(key)
-    def xor(self, t1, t2):#Apply a xor and return the resulting list
-        #print(t1,t2)
-        #print("")
-        return [x^y for x,y in zip(t1,t2)]
     
+    def xor(self, t1, t2):#Apply a xor and return the resulting list
+        return [x^y for x,y in zip(t1,t2)]
+        
     def run(self, key, text,action=ENCRYPT, padding=False):
         if len(key) < 8:
             raise "Key Should be 8 bytes long"
@@ -60,15 +59,20 @@ class Jad():
         self.password = key
         self.text = text
         self.generateKeys() #Se generan las claves para cada una de las iteraciones.
-        text_blocks = nsplit(self.text, 8) #Se divide el texto en bloques de 8 bytes es decir 64 bits
+        
         
         if action==ENCRYPT:
             self.cesar.password = ord(self.password[4])
-            for i in range(len(text_blocks)):
-                self.cesar.text = text_blocks[i]
-                text_blocks[i] = self.cesar.encrypt()
-                
-        print(text_blocks)
+            self.cesar.text = self.text
+            self.text = self.cesar.encrypt()
+        print(self.text)
+        text_blocks = nsplit(self.text, 8) #Se divide el texto en bloques de 8 bytes es decir 64 bits
+        
+
+        
+
+
+        #print(text_blocks)
         result = list()
         for block in text_blocks:#Se aplica el método para cada bloque
             block = string_to_bit_array(block)#Se convierte el bloque a binario 
@@ -86,14 +90,11 @@ class Jad():
         
         final_res = bit_array_to_string(result)
         print(final_res)
+
         if action==DECRYPT:
-            text_blocks = nsplit(final_res, 8) #Se divide el texto en bloques de 8 bytes es decir 64 bits
-            print(text_blocks)
-            final_res = ""
-            self.cesar.password = self.password[4]
-            for block in text_blocks:
-                self.cesar.text = block
-                final_res += self.cesar.decrypt()
+            self.cesar.password = ord(self.password[4])
+            self.cesar.text = final_res
+            final_res = self.cesar.decrypt()
                 
         return final_res 
 
@@ -105,7 +106,7 @@ jad.password = "holacomo"
 jad.text = "hola como estas!"
 jad.generateKeys()
 textooo = jad.run("holacomo","hola como estas!",ENCRYPT)
-print(textooo)
+#print(textooo)
 textooo = jad.run("holacomo",textooo,DECRYPT)
 #print(textooo)
 #print(jad.keys)
