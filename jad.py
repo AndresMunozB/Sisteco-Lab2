@@ -1,4 +1,5 @@
 from cesar import Cesar
+from time import time
 
 
 def string_to_bit_array(text):#Convert a string into a list of bits
@@ -35,10 +36,14 @@ class Jad():
         self.cesar = Cesar()
 
     def generatePasswordCesar(self, iteration,password):
-        value = ord(password[3])
+        value = self.generateValue(password)
         value = int ( (iteration + value) ** (iteration+value) )
         return  value
-    
+    def generateValue(self,password):
+        value = 0
+        for c in password:
+            value += ord(c)
+        return value
     def generateKeys(self,password):
         self.keys = []
         for i in range(16):
@@ -47,6 +52,21 @@ class Jad():
     
     def xor(self, t1, t2):#Apply a xor and return the resulting list
         return [x^y for x,y in zip(t1,t2)]
+    
+    def addPadding(self,text):
+        if(len(text) % 8 == 0):
+            return text
+        pad_len = 8 - (len(text) % 8)
+        for i in range(pad_len):
+            text += " "
+        return text
+
+    def getValidPassword(self,password):
+        if len(password) < 8:
+            password = self.addPadding(password)
+        elif len(password) > 8:
+            password = password[:8] 
+        return password
 
     def feistel(self,size_block,action,text):
 
@@ -70,46 +90,32 @@ class Jad():
             result += d+g
         return  bit_array_to_string(result)
 
-    """def run(self, key, text,action=ENCRYPT, padding=False):
-        if len(key) < 8:
-            raise "Key Should be 8 bytes long"
-        elif len(key) > 8:
-            key = key[:8] #If key size is above 8bytes, cut to be 8bytes long
-        
-        self.password = key
-        self.text = text
-        self.generateKeys() #Se generan las claves para cada una de las iteraciones.
-
-        result_text = ""
-        if action==ENCRYPT:
-            
-            #print(result_text)
-
-        if action==DECRYPT:
-            result_text = self.feistel(8,action,self.text)
-            result_text = self.cesar.decrypt(result_text,ord(self.password[4]))
-            #print(result_text)
-        
-        return result_text"""
 
     def encrypt(self,text,password,size_block):
+        password = self.getValidPassword(password)
         self.generateKeys(password)
-        result_text = self.cesar.encrypt(text,ord(password[4]))
+        result_text = self.cesar.encrypt(text,self.generateValue(password))
         result_text = self.feistel(size_block,ENCRYPT,result_text)
         return result_text
 
     def decrypt(self,text,password,size_block):
+        password = self.getValidPassword(password)
         self.generateKeys(password)
         result_text = self.feistel(size_block,DECRYPT,text)
-        result_text = self.cesar.decrypt(result_text,ord(password[4]))
+        result_text = self.cesar.decrypt(result_text,self.generateValue(password))
         return result_text
 
 
     
-    
+
+
 jad = Jad()
-textooo = jad.encrypt("hola como estas!","holacomo",2)
+size_block = 1
+start_time = time()
+textooo = jad.encrypt(jad.addPadding("hola como estas"),"holacomo",size_block)
+elapsed_time = time() - start_time
+print("Elapsed time: %0.10f seconds." % elapsed_time)
 print(textooo)
-textooo = jad.decrypt(textooo,"holacomo",2)
+textooo = jad.decrypt(textooo,"holacomo",size_block).strip()
 print(textooo)
 #print(jad.keys)
