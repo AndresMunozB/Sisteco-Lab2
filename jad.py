@@ -2,26 +2,27 @@ from cesar import Cesar
 from time import time
 
 
-def string_to_bit_array(text):#Convert a string into a list of bits
+def string_to_bit_array(text):#Convierte un string a una lista de bits
+                                
     array = list()
     for char in text:
-        binval = binvalue(char, 8)#Get the char value on one byte
-        array.extend([int(x) for x in list(binval)]) #Add the bits to the final list
+        binval = binvalue(char, 8)#Obtiene el valor del char en un byte
+        array.extend([int(x) for x in list(binval)]) #Agrega una lista de los bits del char a otra lista
     return array
 
-def bit_array_to_string(array): #Recreate the string from the bit array
+def bit_array_to_string(array): #Transforma un alista de bits a un string
     res = ''.join([chr(int(y,2)) for y in [''.join([str(x) for x in bytes]) for bytes in  nsplit(array,8)]])   
     return res
 
-def binvalue(val, bitsize): #Return the binary value as a string of the given size 
+def binvalue(val, bitsize): #Retorna el valor binario como string de un largo dado 
     binval = bin(val)[2:] if isinstance(val, int) else bin(ord(val))[2:]
     if len(binval) > bitsize:
         raise "binary value larger than the expected size"
     while len(binval) < bitsize:
-        binval = "0"+binval #Add as many 0 as needed to get the wanted size
+        binval = "0"+binval #Agrega ceros necesarios para cumplir con el largo
     return binval
 
-def nsplit(s, n):#Split a list into sublists of size "n"
+def nsplit(s, n):#Divide una lista en sublistas de tamaño n
     return [s[k:k+n] for k in range(0, len(s), n)]
 
 
@@ -30,8 +31,6 @@ DECRYPT=0
 
 class Jad():
     def __init__(self):
-        self.password = None
-        self.text = None
         self.keys = list()
         self.cesar = Cesar()
 
@@ -39,11 +38,13 @@ class Jad():
         value = self.generateValue(password)
         value = int ( (iteration + value) ** (iteration+value) )
         return  value
+
     def generateValue(self,password):
         value = 0
         for c in password:
             value += ord(c)
         return value
+
     def generateKeys(self,password):
         self.keys = []
         for i in range(16):
@@ -69,30 +70,26 @@ class Jad():
         return password
 
     def feistel(self,size_block,action,text):
-
-        text_blocks = nsplit(text, size_block) #Se divide el texto en bloques de 8 bytes es decir 64 bits
-        #print(text_blocks)
-        
+        text_blocks = nsplit(text, size_block) #Se divide el texto en bloques de 8 bytes es decir 64 bits      
         result = list()
         for block in text_blocks:#Se aplica el método para cada bloque
             block = string_to_bit_array(block)#Se convierte el bloque a binario 
-            g, d = nsplit(block, int(len(block)/2)) #g(LEFT), d(RIGHT)
-
+            g, d = nsplit(block, int(len(block)/2)) #g(IZQUIERDA), d(DERECHA)
             tmp = None
             for i in range(16): #Do the 16 rounds
                 if action == ENCRYPT:
-                    tmp = self.xor(self.keys[i], d)#If encrypt use Ki
+                    tmp = self.xor(self.keys[i], d)#Se utiliza la clave Ki para encriptar
                 else:
-                    tmp = self.xor(self.keys[15-i], d)#If decrypt start by the last key
+                    tmp = self.xor(self.keys[15-i], d)#Se empieza a desencritar desde la ultima clave
                 tmp = self.xor(g, tmp)
                 g = d
                 d = tmp
             result += d+g
         return  bit_array_to_string(result)
 
-
     def encrypt(self,text,password,size_block):
         password = self.getValidPassword(password)
+        text = self.addPadding(text)
         self.generateKeys(password)
         result_text = self.cesar.encrypt(text,self.generateValue(password))
         result_text = self.feistel(size_block,ENCRYPT,result_text)
@@ -103,6 +100,7 @@ class Jad():
         self.generateKeys(password)
         result_text = self.feistel(size_block,DECRYPT,text)
         result_text = self.cesar.decrypt(result_text,self.generateValue(password))
+        result_text.strip()
         return result_text
 
 
@@ -110,12 +108,12 @@ class Jad():
 
 
 jad = Jad()
-size_block = 1
+size_block = 8
 start_time = time()
-textooo = jad.encrypt(jad.addPadding("hola como estas"),"holacomo",size_block)
+textooo = jad.encrypt("hola como estas!","holacomo",size_block)
 elapsed_time = time() - start_time
 print("Elapsed time: %0.10f seconds." % elapsed_time)
 print(textooo)
-textooo = jad.decrypt(textooo,"holacomo",size_block).strip()
+textooo = jad.decrypt(textooo,"holacomo",size_block)
 print(textooo)
 #print(jad.keys)
