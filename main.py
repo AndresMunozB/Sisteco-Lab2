@@ -1,40 +1,75 @@
 #import modulo as m
 #m.funcion()
+from jad import Jad
 
-def string_to_bit_array(text):#Convert a string into a list of bits
-    array = list()
-    for char in text:
-        binval = binvalue(char, 8)#Get the char value on one byte
-        array.extend([int(x) for x in list(binval)]) #Add the bits to the final list
-    return array
+def encryptFile(inputName,outputName,password,size_block):
+    jad = Jad()
+    inputFile = open(inputName,"r")
+    outputFile = open(outputName, "w")
+    text = ""
+    for line in inputFile:
+        text += line
+    stringOutput = jad.encrypt(text,password,size_block)
+    outputFile.write(stringOutput)
+    inputFile.close()
+    outputFile.close()
 
-def bit_array_to_string(array): #Recreate the string from the bit array
-    res = ''.join([chr(int(y,2)) for y in [''.join([str(x) for x in bytes]) for bytes in  nsplit(array,8)]])   
-    return res
-    
-def binvalue(val, bitsize): #Return the binary value as a string of the given size 
-    binval = bin(val)[2:] if isinstance(val, int) else bin(ord(val))[2:]
-    if len(binval) > bitsize:
-        raise "binary value larger than the expected size"
-    while len(binval) < bitsize:
-        binval = "0"+binval #Add as many 0 as needed to get the wanted size
-    return binval
+def decryptFile(inputName,outputName,password,size_block):
+    jad = Jad()
+    inputFile = open(inputName,"r")
+    outputFile = open(outputName, "w")
+    text = ""
+    for line in inputFile:
+        text += line
+    stringOutput = jad.decrypt(text,password,size_block)
+    outputFile.write(stringOutput)
+    inputFile.close()
+    outputFile.close()
 
-def encrypt(text):
-    return text+" fin"
+def printMenu():
+    print("    MENU\n")
+    print("1) Cambiar tamaño del bloque.")
+    print("2) Cambiar contraseña.")
+    print("3) Encriptar archivo.")
+    print("4) Desencriptar archivo.")
+    print("5) Salir")
 
-class myCipher():
-    def __init__(self):
-        self.password = None
-        self.text = None
-        self.keys = list()
-    
 def main():
-    size_
-    texto = input("Introducir texto: ")
-    print(texto)
-    encryptText = encrypt(texto)
-    print(encryptText)
+    jad = Jad()
+    size_block = 8
+    password = ""
+    menu = ""
+
+    while(True):
+        printMenu()
+        menu = input("Ingresa una opción: ")
+        if(menu == '1'):
+            try:
+                size_block = int(input("Ingrese el tamaño del bloque: "))
+            except:
+                print("Error al ingresar el tamaño del bloque.")
+        elif (menu == '2'):
+            try:
+                password = input("Ingrese la contraseña: ")
+            except:
+                print("Error al ingresar el la contraseña.")
+        elif (menu == '3'):
+            try:
+                inputName = input("Ingrese el nombre del archivo de entrada: ")
+                outputName = input("Ingrese el nombre del archivo de salida: ")
+                encryptFile(inputName,outputName,password,size_block)
+            except:
+                print("Error al encriptar, intente nuevamente.")
+        elif (menu == '4'):
+            try:
+                inputName = input("Ingrese el nombre del archivo de entrada: ")
+                outputName = input("Ingrese el nombre del archivo de salida: ")
+                decryptFile(inputName,outputName,password,size_block)
+            except:
+                print("Error al desencriptar, intente nuevamente.")
+        elif (menu == '10'):
+            break
+   
 
 
 

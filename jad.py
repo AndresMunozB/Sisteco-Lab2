@@ -70,7 +70,7 @@ class Jad():
         return password
 
     def feistel(self,size_block,action,text):
-        text_blocks = nsplit(text, size_block) #Se divide el texto en bloques de 8 bytes es decir 64 bits      
+        text_blocks = nsplit(text, size_block) #Se divide el texto en bloques de size_block bytes es decir 64 bits      
         result = list()
         for block in text_blocks:#Se aplica el método para cada bloque
             block = string_to_bit_array(block)#Se convierte el bloque a binario 
@@ -106,7 +106,7 @@ class Jad():
 
     
 
-
+"""
 jad = Jad()
 size_block = 8
 start_time = time()
@@ -117,3 +117,4 @@ print(textooo)
 textooo = jad.decrypt(textooo,"holacomo",size_block)
 print(textooo)
 #print(jad.keys)
+"""
