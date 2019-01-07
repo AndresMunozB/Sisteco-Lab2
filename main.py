@@ -37,9 +37,10 @@ def printMenu():
 def main():
     jad = Jad()
     size_block = 8
-    password = ""
+    password = "holacomo"
     menu = ""
-
+    print("NOTA: Tamaño del bloque por defecto: 8 ")
+    print("      Contraseña por defecto: 'holacomo' \n\n")
     while(True):
         printMenu()
         menu = input("Ingresa una opción: ")
@@ -67,7 +68,7 @@ def main():
                 decryptFile(inputName,outputName,password,size_block)
             except:
                 print("Error al desencriptar, intente nuevamente.")
-        elif (menu == '10'):
+        elif (menu == '5'):
             break
    
 

@@ -54,10 +54,10 @@ class Jad():
     def xor(self, t1, t2):#Apply a xor and return the resulting list
         return [x^y for x,y in zip(t1,t2)]
     
-    def addPadding(self,text):
-        if(len(text) % 8 == 0):
+    def addPadding(self,text,size_block):
+        if(len(text) % size_block == 0):
             return text
-        pad_len = 8 - (len(text) % 8)
+        pad_len = size_block - (len(text) % size_block)
         for i in range(pad_len):
             text += " "
         return text
@@ -89,7 +89,7 @@ class Jad():
 
     def encrypt(self,text,password,size_block):
         password = self.getValidPassword(password)
-        text = self.addPadding(text)
+        text = self.addPadding(text,size_block)
         self.generateKeys(password)
         result_text = self.cesar.encrypt(text,self.generateValue(password))
         result_text = self.feistel(size_block,ENCRYPT,result_text)
