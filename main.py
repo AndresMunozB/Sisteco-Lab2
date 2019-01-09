@@ -1,6 +1,6 @@
 #import modulo as m
 #m.funcion()
-from jad import Jad
+from jad2 import Jad
 
 def encryptFile(inputName,outputName,password,size_block):
     jad = Jad()
