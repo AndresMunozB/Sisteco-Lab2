@@ -63,15 +63,8 @@ class Jad():
         key = string_to_bit_array(password)
         self.keys.append(key)
         self.keys.append(newKey)
-
-        #hola= self.xor(key,newKey)
-        #self.keys.append(key)
-        #newKey = self.xor(self.keys[0],key)
-        #self.keys.append(newKey)
-        for i in range(0,16):#Apply the 16 rounds
-            #newKey = self.xor(self.keys[i-1],self.keys[i])
+        for i in range(1,16):#Apply the 16 rounds
             key = self.xor(self.keys[i-1],self.keys[i])
-            #self.keys.append(newKey) #Apply the permut to get the Ki
             self.keys.append(key)
     
     def xor(self, t1, t2):#Apply a xor and return the resulting list

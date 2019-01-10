@@ -1,9 +1,9 @@
 #import modulo as m
 #m.funcion()
-from jad2 import Jad
+from jadCypher import JadCypher
 
 def encryptFile(inputName,outputName,password,size_block):
-    jad = Jad()
+    jad = JadCypher()
     inputFile = open(inputName,"r")
     outputFile = open(outputName, "w")
     text = ""
@@ -15,7 +15,7 @@ def encryptFile(inputName,outputName,password,size_block):
     outputFile.close()
 
 def decryptFile(inputName,outputName,password,size_block):
-    jad = Jad()
+    jad = JadCypher()
     inputFile = open(inputName,"r")
     outputFile = open(outputName, "w")
     text = ""
@@ -35,7 +35,7 @@ def printMenu():
     print("5) Salir")
 
 def main():
-    jad = Jad()
+    
     size_block = 8
     password = "holacomo"
     menu = ""

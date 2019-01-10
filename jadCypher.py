@@ -23,18 +23,28 @@ def binvalue(val, bitsize): #Retorna el valor binario como string de un largo da
 def nsplit(s, n):#Divide una lista en sublistas de tamaño n
     return [s[k:k+n] for k in range(0, len(s), n)]
 
-
+def avalancha(t1,t2):
+    t1bit = string_to_bit_array(t1)
+    t2bit = string_to_bit_array(t2)
+    contador = 0
+    for i in range(len(t1bit)):
+        if(t1bit[i] == t2bit[i]):
+            contador +=1
+    print(contador/len(t1bit))
 class JadCypher():
     def __init__(self):
         self.blocks = list()
         self.vi = list()
+    
     def generateBlocks(self,text,size_block):
         self.blocks = []
         blocks = nsplit(text, size_block)
         for block in blocks:
             self.blocks.append(string_to_bit_array(block))
+        
     def initvi(self,size_block):
         self.vi = string_to_bit_array("\x00"*size_block)
+    
     def xor(self, t1, t2):#Apply a xor and return the resulting list
         return [x^y for x,y in zip(t1,t2)]
             
@@ -42,47 +52,37 @@ class JadCypher():
         result = ""
         self.generateBlocks(text,size_block)
         self.initvi(size_block)
-
         jad = Jad()
         for i in range(len(self.blocks)):
             xor = self.xor(self.vi,self.blocks[i])
-            #print(len(xor))
             textXor = bit_array_to_string(xor)
             encryp = jad.encrypt(textXor,password,len(textXor))
-            #print(encryp)
             self.vi = string_to_bit_array(encryp)
             result += encryp
-
-            #newtext = self.xor(self.vi,self.blocks[i])
-            #textoBlock = bit_array_to_string(newtext)
-            #self.vi = jad.encrypt(textoBlock,password,len(textoBlock))
-        #print(result)
         return result 
 
     def decrypt(self,text,password,size_block):
-        #print(text)
         result = ""
         self.generateBlocks(text,size_block)
         self.initvi(size_block)
-        print(self.vi)
         jad = Jad()
-        #print(len(self.blocks))        
         for i in range(len(self.blocks)):
             texto = bit_array_to_string(self.blocks[i])
             decryp = jad.decrypt(texto,password,len(texto))
-            #print(decryp)
             plaintext = self.xor(self.vi,string_to_bit_array(decryp))
             self.vi = self.blocks[i]
             
             result += bit_array_to_string(plaintext)
         return result
 
-
 jadcypher = JadCypher()
-texto = jadcypher.encrypt("holacomoestatula","golacomo",8 )
+texto1 = jadcypher.encrypt("tola como estas bien y tu bien tambien que bueno","golacomo",2 )
+texto2 = jadcypher.encrypt("hola como estas bien y tu bien tambien que bueno","golacomo",2 )
+avalancha(texto1,texto2)
+
 #print("encryptado:", texto)
-textodecrypt = jadcypher.decrypt(texto,"golacomo",8)
-print("desent: ", textodecrypt)
+#textodecrypt = jadcypher.decrypt(texto,"golacomo",8)
+#print("desent: ", textodecrypt)
 
         
 
