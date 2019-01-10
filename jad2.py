@@ -127,7 +127,7 @@ class Jad():
 
     
 
-
+"""
 jad = Jad()
 size_block = 8
 start_time = time()
@@ -138,3 +138,4 @@ print(textooo)
 textooo = jad.decrypt(textooo,"holacomo",size_block)
 print(textooo)
 #print(jad.keys)
+"""
