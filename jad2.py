@@ -28,34 +28,12 @@ def nsplit(s, n):#Divide una lista en sublistas de tamaño n
 
 ENCRYPT=1
 DECRYPT=0
-#Initial permut made on the key
-CP_1 = [57, 49, 41, 33, 25, 17, 9,
-        1, 58, 50, 42, 34, 26, 18,
-        10, 2, 59, 51, 43, 35, 27,
-        19, 11, 3, 60, 52, 44, 36,
-        63, 55, 47, 39, 31, 23, 15,
-        7, 62, 54, 46, 38, 30, 22,
-        14, 6, 61, 53, 45, 37, 29,
-        21, 13, 5, 28, 20, 12, 4]
-
-SHIFT = [1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1]
-
-CP_2 = [14, 17, 11, 24, 1, 5, 3, 28,
-        15, 6, 21, 10, 23, 19, 12, 4,
-        26, 8, 16, 7, 27, 20, 13, 2,
-        41, 52, 31, 37, 47, 55, 30, 40,
-        51, 45, 33, 48, 44, 49, 39, 56,
-        34, 53, 46, 42, 50, 36, 29, 32]
 
 
 class Jad():
     def __init__(self):
         self.keys = list()
         self.cesar = Cesar()
-    def permut(self, block, table):#Permut the given block using the given table (so generic method)
-        return [block[x-1] for x in table]
-    def shift(self, g, d, n): #Shift a list of the given value
-        return g[n:] + g[:n], d[n:] + d[:n]
 
     def cifrar(self,desplazamiento, texto):
         texto_cifrado = ""
@@ -63,37 +41,12 @@ class Jad():
             texto_cifrado = texto_cifrado + chr(ord(caracter) + desplazamiento)
         return texto_cifrado
 
-    def generateKeys(self,password):#Algorithm that generates all the keys
-        """
-        self.keys = []
-        newKey = password[::-1]
-        newKey = string_to_bit_array(newKey)
-        key = string_to_bit_array(password)
-        self.keys.append(key)
-        self.keys.append(newKey)
-        for i in range(1,16):#Apply the 16 rounds
-            key = self.xor(self.keys[i-1],self.keys[i])
-            self.keys.append(key)
-        """
-        
-        for i in range(0,16):#Apply the 16 rounds
+    def generateKeys(self,password):
+        for i in range(0,16):
             cifred = self.cifrar((i+3)*3,password)
-            #print("llave", cifred)
-            #print(cifred)
             key = string_to_bit_array(cifred)
             self.keys.append(key)
-        
-        """
-        self.keys = []
-        key = string_to_bit_array(password)
-        key = self.permut(key, CP_1) #Apply the initial permut on the key
-        g, d = nsplit(key, 28) #Split it in to (g->LEFT),(d->RIGHT)
-        for i in range(16):#Apply the 16 rounds
-            g, d = self.shift(g, d, SHIFT[i]) #Apply the shift associated with the round (not always 1)
-            tmp = g + d #Merge them
-            self.keys.append(self.permut(tmp, CP_2)) #Apply the permut to get the Ki
-            print (len(self.permut(tmp, CP_2)))"""
-    def xor(self, t1, t2):#Apply a xor and return the resulting list
+    def xor(self, t1, t2):
         return [x^y for x,y in zip(t1,t2)]
     
     def addPadding(self,text,size_block):

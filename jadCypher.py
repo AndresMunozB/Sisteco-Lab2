@@ -15,7 +15,7 @@ def bit_array_to_string(array): #Transforma un alista de bits a un string
 def binvalue(val, bitsize): #Retorna el valor binario como string de un largo dado 
     binval = bin(val)[2:] if isinstance(val, int) else bin(ord(val))[2:]
     if len(binval) > bitsize:
-        raise "binary value larger than the expected size"
+        raise "el valor binario es mas largo que el tamaño esperado"
     while len(binval) < bitsize:
         binval = "0"+binval #Agrega ceros necesarios para cumplir con el largo
     return binval
@@ -83,13 +83,3 @@ class JadCypher():
             
             result += bit_array_to_string(plaintext)
         return result
-
-jadcypher = JadCypher()
-texto1 = jadcypher.encrypt("rlacomoestasasldflasdkfñlaskdflñ","holacomo",8 )
-texto2 = jadcypher.encrypt("rlacomoestasasldflasdkfñlaskdflñ","golacomo",8 )
-avalancha(texto1,texto2)
-
-#print("encryptado:", texto)
-#textodecrypt = jadcypher.decrypt(texto,"golacomo",8)
-#print("desent: ", textodecrypt)
-    

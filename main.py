@@ -4,6 +4,14 @@ from jadCypher import JadCypher
 import time
 import matplotlib.pyplot as plt
 
+def graficar(title,xlabel,ylabel,x,y):
+	
+	plt.title(title)
+	plt.xlabel(xlabel)
+	plt.ylabel(ylabel)
+	plt.plot(x,y,"-")
+	plt.show()
+
 def encryptFile(inputName,outputName,password,size_block):
     jad = JadCypher()
     inputFile = open(inputName,"r")
@@ -60,14 +68,15 @@ def main():
             try:
                 inputName = input("Ingrese el nombre del archivo de entrada: ")
                 outputName = input("Ingrese el nombre del archivo de salida: ")
-                """start_time = time.time()
+                start_time = time.time()
                 encryptFile(inputName,outputName,password,size_block)
                 exec_time = (time.time() - start_time)
                 throughput = size_block/(time.time() - start_time)
                 print("Time: ", exec_time)
-                print("Throughput: ", throughput)"""
-                #sizeBloques = [1,2,4,8,16,32]
-                sizeBloques = []
+                print("Throughput: ", throughput)
+                
+                #Lo comentado es utilizado para evaluar la encriptación
+                """sizeBloques = []
                 tiempos = []
                 throughputs = []
                 for i in range(1,32):
@@ -83,7 +92,7 @@ def main():
                     print("Throughput (tamaño " + str(size) + "): %s" % throughput)
                 graficar("","Tamaño del bloque [Bytes]", "Tiempo [s]", sizeBloques, tiempos)
                 graficar("","Tamaño del bloque [Bytes]", "Throughput", sizeBloques, throughputs)
-                 
+                """
             except:
                 print("Error al encriptar, intente nuevamente.")
         elif (menu == '4'):
@@ -95,16 +104,6 @@ def main():
                 print("Error al desencriptar, intente nuevamente.")
         elif (menu == '5'):
             break
-
-def graficar(title,xlabel,ylabel,x,y):
-	print("Mostrando grafico...")
-	plt.title(title)
-	plt.xlabel(xlabel)
-	plt.ylabel(ylabel)
-	plt.plot(x,y,"-")
-	plt.show()
-
-
 
 
 
