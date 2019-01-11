@@ -1,4 +1,4 @@
-from jad2 import Jad
+from jad import Jad
 
 def string_to_bit_array(text):#Convierte un string a una lista de bits
                                 

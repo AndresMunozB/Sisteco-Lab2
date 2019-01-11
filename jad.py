@@ -1,4 +1,4 @@
-from cesar import Cesar
+
 from time import time
 
 
@@ -29,29 +29,23 @@ def nsplit(s, n):#Divide una lista en sublistas de tamaño n
 ENCRYPT=1
 DECRYPT=0
 
+
 class Jad():
     def __init__(self):
         self.keys = list()
-        self.cesar = Cesar()
 
-    def generatePasswordCesar(self, iteration,password):
-        value = self.generateValue(password)
-        value = int ( (iteration + value) ** (iteration+value) )
-        return  value
-
-    def generateValue(self,password):
-        value = 0
-        for c in password:
-            value += ord(c)
-        return value
+    def cifrar(self,desplazamiento, texto):
+        texto_cifrado = ""
+        for caracter in texto:
+            texto_cifrado = texto_cifrado + chr(ord(caracter) + desplazamiento)
+        return texto_cifrado
 
     def generateKeys(self,password):
-        self.keys = []
-        for i in range(16):
-            key = string_to_bit_array(self.cesar.encrypt(password,self.generatePasswordCesar(i,password)))
+        for i in range(0,16):
+            cifred = self.cifrar((i+3)*3,password)
+            key = string_to_bit_array(cifred)
             self.keys.append(key)
-    
-    def xor(self, t1, t2):#Apply a xor and return the resulting list
+    def xor(self, t1, t2):
         return [x^y for x,y in zip(t1,t2)]
     
     def addPadding(self,text,size_block):
@@ -91,15 +85,13 @@ class Jad():
         password = self.getValidPassword(password)
         text = self.addPadding(text,size_block)
         self.generateKeys(password)
-        result_text = self.cesar.encrypt(text,self.generateValue(password))
-        result_text = self.feistel(size_block,ENCRYPT,result_text)
+        result_text = self.feistel(size_block,ENCRYPT,text)
         return result_text
 
     def decrypt(self,text,password,size_block):
         password = self.getValidPassword(password)
         self.generateKeys(password)
         result_text = self.feistel(size_block,DECRYPT,text)
-        result_text = self.cesar.decrypt(result_text,self.generateValue(password))
         result_text.strip()
         return result_text
 
