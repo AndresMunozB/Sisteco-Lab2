@@ -56,7 +56,15 @@ class Jad():
         return [block[x-1] for x in table]
     def shift(self, g, d, n): #Shift a list of the given value
         return g[n:] + g[:n], d[n:] + d[:n]
+
+    def cifrar(self,desplazamiento, texto):
+        texto_cifrado = ""
+        for caracter in texto:
+            texto_cifrado = texto_cifrado + chr(ord(caracter) + desplazamiento)
+        return texto_cifrado
+
     def generateKeys(self,password):#Algorithm that generates all the keys
+        """
         self.keys = []
         newKey = password[::-1]
         newKey = string_to_bit_array(newKey)
@@ -66,7 +74,25 @@ class Jad():
         for i in range(1,16):#Apply the 16 rounds
             key = self.xor(self.keys[i-1],self.keys[i])
             self.keys.append(key)
-    
+        """
+        
+        for i in range(0,16):#Apply the 16 rounds
+            cifred = self.cifrar((i+3)*3,password)
+            #print("llave", cifred)
+            #print(cifred)
+            key = string_to_bit_array(cifred)
+            self.keys.append(key)
+        
+        """
+        self.keys = []
+        key = string_to_bit_array(password)
+        key = self.permut(key, CP_1) #Apply the initial permut on the key
+        g, d = nsplit(key, 28) #Split it in to (g->LEFT),(d->RIGHT)
+        for i in range(16):#Apply the 16 rounds
+            g, d = self.shift(g, d, SHIFT[i]) #Apply the shift associated with the round (not always 1)
+            tmp = g + d #Merge them
+            self.keys.append(self.permut(tmp, CP_2)) #Apply the permut to get the Ki
+            print (len(self.permut(tmp, CP_2)))"""
     def xor(self, t1, t2):#Apply a xor and return the resulting list
         return [x^y for x,y in zip(t1,t2)]
     

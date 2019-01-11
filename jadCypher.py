@@ -24,13 +24,22 @@ def nsplit(s, n):#Divide una lista en sublistas de tamaño n
     return [s[k:k+n] for k in range(0, len(s), n)]
 
 def avalancha(t1,t2):
-    t1bit = string_to_bit_array(t1)
-    t2bit = string_to_bit_array(t2)
     contador = 0
+    largo = 0
+	
+    #t1bit = string_to_bit_array(t1)
+    #t2bit = string_to_bit_array(t2)
+    t1bit = t1
+    t2bit = t2
+    if len(t1bit) > len(t2bit):
+        largo = len(t2bit)
+    else:
+        largo = len(t1bit)
     for i in range(len(t1bit)):
-        if(t1bit[i] == t2bit[i]):
+        if(t1bit[i] != t2bit[i]):
             contador +=1
-    print(contador/len(t1bit))
+    print(contador/largo)
+    
 class JadCypher():
     def __init__(self):
         self.blocks = list()
@@ -76,14 +85,11 @@ class JadCypher():
         return result
 
 jadcypher = JadCypher()
-texto1 = jadcypher.encrypt("tola como estas bien y tu bien tambien que bueno","golacomo",2 )
-texto2 = jadcypher.encrypt("hola como estas bien y tu bien tambien que bueno","golacomo",2 )
+texto1 = jadcypher.encrypt("rlacomoestasasldflasdkfñlaskdflñ","holacomo",8 )
+texto2 = jadcypher.encrypt("rlacomoestasasldflasdkfñlaskdflñ","golacomo",8 )
 avalancha(texto1,texto2)
 
 #print("encryptado:", texto)
 #textodecrypt = jadcypher.decrypt(texto,"golacomo",8)
 #print("desent: ", textodecrypt)
-
-        
-
     

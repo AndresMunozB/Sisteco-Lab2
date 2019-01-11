@@ -1,6 +1,8 @@
 #import modulo as m
 #m.funcion()
 from jadCypher import JadCypher
+import time
+import matplotlib.pyplot as plt
 
 def encryptFile(inputName,outputName,password,size_block):
     jad = JadCypher()
@@ -58,7 +60,30 @@ def main():
             try:
                 inputName = input("Ingrese el nombre del archivo de entrada: ")
                 outputName = input("Ingrese el nombre del archivo de salida: ")
+                """start_time = time.time()
                 encryptFile(inputName,outputName,password,size_block)
+                exec_time = (time.time() - start_time)
+                throughput = size_block/(time.time() - start_time)
+                print("Time: ", exec_time)
+                print("Throughput: ", throughput)"""
+                #sizeBloques = [1,2,4,8,16,32]
+                sizeBloques = []
+                tiempos = []
+                throughputs = []
+                for i in range(1,32):
+                    sizeBloques.append(i)
+                for size in sizeBloques:
+                    start_time = time.time()
+                    encryptFile(inputName,outputName,password,size)
+                    exec_time = (time.time() - start_time)
+                    throughput = size/(time.time() - start_time)
+                    tiempos.append(exec_time)
+                    throughputs.append(throughput)
+                    print("Tiempo de cifrado (tamaño " + str(size) + "): %s segundos" % exec_time)
+                    print("Throughput (tamaño " + str(size) + "): %s" % throughput)
+                graficar("","Tamaño del bloque [Bytes]", "Tiempo [s]", sizeBloques, tiempos)
+                graficar("","Tamaño del bloque [Bytes]", "Throughput", sizeBloques, throughputs)
+                 
             except:
                 print("Error al encriptar, intente nuevamente.")
         elif (menu == '4'):
@@ -70,7 +95,15 @@ def main():
                 print("Error al desencriptar, intente nuevamente.")
         elif (menu == '5'):
             break
-   
+
+def graficar(title,xlabel,ylabel,x,y):
+	print("Mostrando grafico...")
+	plt.title(title)
+	plt.xlabel(xlabel)
+	plt.ylabel(ylabel)
+	plt.plot(x,y,"-")
+	plt.show()
+
 
 
 
